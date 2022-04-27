@@ -1,4 +1,7 @@
 ;
+
+;; ver se essa gambiarra vai funcionar
+STATUS:	EQU	65498
 ;
 ;******************************************************************************
 ;
@@ -43,6 +46,7 @@ _IOAREA08:	equ	hFFC0
 
 ; Acesso em 16 bits
 		org		_IOAREA16
+STACK:
 		daw		[31]
 IVET:	dw		0			; Vetor de interrupção
 
@@ -98,6 +102,10 @@ VISOR:	dab		[36]		; Portas de acesso ao visor
 		clr 	TECST
 ; 6) Inicializar o timer
 
+
+
+;;;;;;;nao sei inicializar timer
+
 ; 7) Limpar o visor
 		mov		#VISOR,POSICAO		; POSICAO = VISOR
 		jsr		r7,ClearDisplay
@@ -128,7 +136,7 @@ _kbhit:
 ;		
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
-
+;
 _getchar:
 	_inicio_getchar:
 		MOV #65498,R0
