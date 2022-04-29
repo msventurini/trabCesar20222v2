@@ -94,7 +94,7 @@ VISOR:	dab		[36]		; Portas de acesso ao visor
 		clr INTS
 		clr TECDT
 ; 4) Inicializar as variáveis internas do kernel
-	;depois
+	MOV	#visor,_putchar_position
 	
 ; 5) Inicializar o teclado zerando o byte de estado (TECST, endereço 65498)
 		clr 	TECST
@@ -161,6 +161,7 @@ _putchar:
 	INC _putchar_position
 	CMP _putchar_position,#hFFFF
 	BGT _putchar_reset_display
+	clr r4
 	RTS R7
 
 _putchar_reset_display:
@@ -186,12 +187,22 @@ _putmsg:
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 _getclock:
+
+		mov		hour, r5
+		mov		min, r4
+		mov		sec, r3
 		rts		r7
+
+
 		
 ;		
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 _setclock:
+
+		mov		r5, hour
+		mov		r4, min
+		mov		r3, sec
 		rts		r7
 		
 ;		
@@ -249,6 +260,9 @@ ISRtim_Fim:
 ;VARIAVEIS DE TRATAMENTO DE INTERRUPÇÃO
 TICKCNT:	dw		0		; Variavel usada para contar o n?mero de interrup??es de temporiza??o
 TICK:		dw		0		; Flag que indica que passou 1 segundo, ap?s o ultimo TICK
+hour:		dw		1
+min:		dw		2
+sec:		dw		3
 
 
 ;variaveis do putchar
@@ -279,17 +293,26 @@ org _APP
 
 
 ;versao que pega entrada do teclado
-JSR R7,_getchar
-MOV R0, R5
-JSR R7,_putchar
+;JSR R7,_getchar
+;MOV R0, R5
+;JSR R7,_putchar
 
+mov #7, r3
+mov #8, r4
+mov #9, r5
 
+jsr r7,_setclock
 
+clr r3
+clr r4
+clr r5
+
+jsr r7,_getclock
 
 ;MOV TEC_BUFFER, R5
 ;JSR R7,_putchar
 
 
-BR _APP
+;BR _APP
 
 HLT
