@@ -172,7 +172,13 @@ MOV	#visor,_putchar_position
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 _putmsg:
-		rts		r7
+	_putmsg_loop:
+		JSR R7,_putchar
+		INC R5
+	;CMP	R5, #h00
+	;BNE	_putmsg_loop
+	
+	rts	r7
 	
 ;		
 ;------------------------------------------------------------------------------
@@ -196,6 +202,8 @@ _setalarm:
 
 ;variaveis do putchar
 _putchar_position:	dw	65500
+_test_string:		dab	'abacate'
+_test_string_end:	db	h00
 
 
 ;coisas recicladas do tecbuf
@@ -218,10 +226,17 @@ _clear_display_loop:
 
 org _APP
 
-JSR R7,_getchar
-MOV R0, R5
+
+;versao que pega entrada do teclado
+;JSR R7,_getchar
+;MOV R0, R5
+;JSR R7,_putchar
+
+
+MOV TEC_BUFFER, R5
 JSR R7,_putchar
-;MOV R5, 65500
+
+
 
 BR _APP
 
