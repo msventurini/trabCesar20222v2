@@ -1,7 +1,7 @@
 ;
 
 ;; ver se essa gambiarra vai funcionar
-STATUS:	EQU	65498
+
 ;
 ;******************************************************************************
 ;
@@ -87,28 +87,27 @@ VISOR:	dab		[36]		; Portas de acesso ao visor
 		org		_RESET
 		
 ; 1) Desabilitar o sistema de interrupções
-		mov		#h00,INTE
+		clr	INTE
 
 ; 2) Inicializar o stack pointer (SP = R6)
-		mov		#STACK,r6
+		mov		#H7FFF,r6
 
 ; 3) Inicializar as variáveis internas usadas pelo sistema de interrupções e periféricos (IVET, INTE, etc.)
-	;feito acima?
+	;depois
 	
 ; 4) Inicializar as variáveis internas do kernel
-	;feito acima?
+	;depois
 	
 ; 5) Inicializar o teclado zerando o byte de estado (TECST, endereço 65498)
 		clr 	TECST
+
 ; 6) Inicializar o timer
+		mov #250, TIMDT
 
-
-
-;;;;;;;nao sei inicializar timer
 
 ; 7) Limpar o visor
-		mov		#VISOR,POSICAO		; POSICAO = VISOR
-		jsr		r7,ClearDisplay
+		;mov		#VISOR,POSICAO		; POSICAO = VISOR
+		jsr		r7,_clear_display
 ; 8) Habilitar interrupções
 		mov		#h81,INTE			;por hora, apenas interrupções de timer
 ; 9) Retornar para o programa de aplicação com um desvio para o endereço _APP da memória
@@ -118,7 +117,7 @@ VISOR:	dab		[36]		; Portas de acesso ao visor
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 _kbhit:
-	CMP STATUS,#H80
+	;CMP STATUS,#H80
 	BNE _kbhit_not_pressed
 
 	_kbhit_pressed:
@@ -194,10 +193,10 @@ ptOut:		dw		0
 TEC_BUFFER:	dab		[32]
 
 ; Limpa o visor
-ClearDisplay:
+_clear_display:
 		mov		#VISOR,r0
-CD_Loop:
+_clear_display_loop:
 		mov		#' ',(r0)
 		inc		r0
-		bne		CD_Loop
+		bne		_clear_display_loop
 		rts		r7
