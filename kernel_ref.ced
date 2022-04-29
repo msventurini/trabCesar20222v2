@@ -156,8 +156,17 @@ _getchar:
 _putchar:
 	MOV _putchar_position, R4
 	MOV R5, (R4)
+	INC _putchar_position
+	CMP _putchar_position,#hFFFF
+	BGT _putchar_reset_display
 	RTS R7
-;	
+
+_putchar_reset_display:
+MOV	#visor,_putchar_position
+	jsr	r7,_clear_display
+	RTS R7
+
+	
 
 ;		
 ;------------------------------------------------------------------------------
