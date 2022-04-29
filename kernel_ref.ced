@@ -105,7 +105,7 @@ VISOR:	dab		[36]		; Portas de acesso ao visor
 		;mov		#VISOR,POSICAO		; POSICAO = VISOR
 		jsr		r7,_clear_display
 ; 8) Habilitar interrupções
-		mov		#h81,INTE			;por hora, apenas interrupções de timer
+		;mov		#h81,INTE			;por hora, apenas interrupções de timer
 ; 9) Retornar para o programa de aplicação com um desvio para o endereço _APP da memória
 		jmp		_APP
 
@@ -119,7 +119,6 @@ _kbhit:
 	_kbhit_pressed:
 
 		MOV #0, R0
-		clr TECST
 		BR _kbhit_end
 
 	_kbhit_not_pressed:
@@ -200,12 +199,13 @@ _clear_display_loop:
 		rts		r7
 
 
+
 org _APP
 
 JSR R7,_getchar
 MOV R0, R5
-JSR R7,_putchar
-;MOV R5, 65500
+;JSR R7,_putchar
+MOV R5, 65500
 
 BR _APP
 
