@@ -30,10 +30,10 @@ _SETCLOCK                 620                 26C
 _SETALARM                 621                 26D
 _PUTCHAR_POSITION         622                 26E
 _TEST_STRING              624                 270
-_TEST_STRING_END          631                 277
-POSICAO                   632                 278
-PTIN                      634                 27A
-PTOUT                     636                 27C
-TEC_BUFFER                638                 27E
-_CLEAR_DISPLAY            670                 29E
-_CLEAR_DISPLAY_LOOP       674                 2A2
+_TEST_STRING_END          625                 271
+POSICAO                   626                 272
+PTIN                      628                 274
+PTOUT                     630                 276
+TEC_BUFFER                632                 278
+_CLEAR_DISPLAY            664                 298
+_CLEAR_DISPLAY_LOOP       668                 29C

@@ -202,7 +202,7 @@ _setalarm:
 
 ;variaveis do putchar
 _putchar_position:	dw	65500
-_test_string:		dab	'abacate'
+_test_string:		db	'a'
 _test_string_end:	db	h00
 
 
@@ -228,14 +228,13 @@ org _APP
 
 
 ;versao que pega entrada do teclado
-;JSR R7,_getchar
-;MOV R0, R5
-;JSR R7,_putchar
-
-
-MOV TEC_BUFFER, R5
+JSR R7,_getchar
+MOV R0, R5
 JSR R7,_putchar
 
+
+;MOV TEC_BUFFER, R5
+;JSR R7,_putchar
 
 
 BR _APP
