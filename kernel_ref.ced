@@ -90,7 +90,9 @@ VISOR:	dab		[36]		; Portas de acesso ao visor
 
 ; 3) Inicializar as variáveis internas usadas pelo sistema de interrupções e periféricos (IVET, INTE, etc.)
 	;depois
-	
+			mov #isr, IVET
+		clr INTS
+		clr TECDT
 ; 4) Inicializar as variáveis internas do kernel
 	;depois
 	
@@ -105,7 +107,7 @@ VISOR:	dab		[36]		; Portas de acesso ao visor
 		;mov		#VISOR,POSICAO		; POSICAO = VISOR
 		jsr		r7,_clear_display
 ; 8) Habilitar interrupções
-		;mov		#h81,INTE			;por hora, apenas interrupções de timer
+		mov		#h81,INTE			;por hora, apenas interrupções de timer
 ; 9) Retornar para o programa de aplicação com um desvio para o endereço _APP da memória
 		jmp		_APP
 
@@ -199,6 +201,55 @@ _setalarm:
 		rts		r7
 
 
+;		
+;------------------------------------------------------------------------------
+;TRATAMENTO DE INTERRUPÇÕES DO TIMER
+;------------------------------------------------------------------------------
+
+
+; S? ser? chamada se as interrup??es estiverem habilitadas
+isr:
+		mov		r0,-(r6)	; Salva registradores (n?o ? necess?rio salvar o R5)
+		mov		r1,-(r6)
+		mov		r2,-(r6)
+		mov		r3,-(r6)
+		mov		r4,-(r6)
+
+		mov		INTS,r0		; Verifica se ? INT do TIMER
+		and		#1,r0
+		beq		ISR2
+		jsr		r7,ISRtim	; Tratamento da INT do TIMER
+		and		#hFFFE,INTS	; Desliga bit de INT TIMER
+ISR2:
+
+		mov		(r6)+,r4	; Retorna os registradores da pilha
+		mov		(r6)+,r3
+		mov		(r6)+,r2
+		mov		(r6)+,r1
+		mov		(r6)+,r0
+
+		rti					; Return From Interrupt
+	
+; Tratamento das interrup??es de timer
+ISRtim:
+		dec		TICKCNT				; if (--TICKCNT==0) {
+		bne		ISRtim_Fim
+		mov		r5,TICKCNT			;		TICKCNT = r5
+		
+		mov		#1,TICK				;		TICK = 1
+		
+ISRtim_Fim:
+		rts		r7					; }
+		
+
+
+;------------------------------------------------------------------------------
+;------------------------------------------------------------------------------
+
+;VARIAVEIS DE TRATAMENTO DE INTERRUPÇÃO
+TICKCNT:	dw		0		; Variavel usada para contar o n?mero de interrup??es de temporiza??o
+TICK:		dw		0		; Flag que indica que passou 1 segundo, ap?s o ultimo TICK
+
 
 ;variaveis do putchar
 _putchar_position:	dw	65500
@@ -231,6 +282,8 @@ org _APP
 JSR R7,_getchar
 MOV R0, R5
 JSR R7,_putchar
+
+
 
 
 ;MOV TEC_BUFFER, R5
