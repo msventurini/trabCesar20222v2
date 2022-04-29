@@ -154,7 +154,8 @@ _getchar:
 ;------------------------------------------------------------------------------
 
 _putchar:
-	MOV R5,65500
+	MOV _putchar_position, R4
+	MOV R5, (R4)
 	RTS R7
 ;	
 
@@ -182,6 +183,12 @@ _setclock:
 _setalarm:
 		rts		r7
 
+
+
+;variaveis do putchar
+_putchar_position:	dw	65500
+
+
 ;coisas recicladas do tecbuf
 POSICAO:	dw		0		; Endereço no visor da posição atual onde o 'A' está aparecendo
 
@@ -204,8 +211,8 @@ org _APP
 
 JSR R7,_getchar
 MOV R0, R5
-;JSR R7,_putchar
-MOV R5, 65500
+JSR R7,_putchar
+;MOV R5, 65500
 
 BR _APP
 
