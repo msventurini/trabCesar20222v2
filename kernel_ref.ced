@@ -1,8 +1,4 @@
-;
 
-;; ver se essa gambiarra vai funcionar
-
-;
 ;******************************************************************************
 ;
 ;	Arquivo de Referência para o desenvolvimento do kernel.
@@ -117,12 +113,13 @@ VISOR:	dab		[36]		; Portas de acesso ao visor
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 _kbhit:
-	;CMP STATUS,#H80
+	CMP 65498,#H80
 	BNE _kbhit_not_pressed
 
 	_kbhit_pressed:
 
 		MOV #0, R0
+		clr TECST
 		BR _kbhit_end
 
 	_kbhit_not_pressed:
@@ -148,7 +145,8 @@ _getchar:
 	CMP R0, #0
 	BNE _teste_getchar
 
-	MOV 65499, R0
+	MOV TECDT, R0
+	CLR TECDT
 
 	RTS R7
 		
@@ -200,3 +198,15 @@ _clear_display_loop:
 		inc		r0
 		bne		_clear_display_loop
 		rts		r7
+
+
+org _APP
+
+JSR R7,_getchar
+MOV R0, R5
+JSR R7,_putchar
+;MOV R5, 65500
+
+BR _APP
+
+HLT

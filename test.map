@@ -1,0 +1,12 @@
+Símbolo         Valor Decimal   Valor Hexadecimal
+-------         -------------   -----------------
+STATUS                  65498                FFDA
+A                          12                   C
+_KBHIT                     25                  19
+_KBHIT_PRESSED             33                  21
+_KBHIT_NOT_PRESSED         39                  27
+_KBHIT_END                 43                  2B
+_GETCHAR                   44                  2C
+_INICIO_GETCHAR            44                  2C
+_TESTE_GETCHAR             48                  30
+_PUTCHAR                   65                  41

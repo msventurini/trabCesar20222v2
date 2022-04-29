@@ -1,0 +1,57 @@
+STATUS:	EQU	65498
+
+MOV #0, R0
+
+MOV #0, R1
+
+MOV #0, R2
+
+
+a:
+JSR R7,_getchar
+MOV R0, R5
+JSR R7,_putchar
+;MOV R0, 65500
+
+BR a
+
+HLT
+
+_kbhit:
+
+	CMP STATUS,#H80
+	BNE _kbhit_not_pressed
+
+	_kbhit_pressed:
+
+		MOV #0, R0
+		BR _kbhit_end
+
+	_kbhit_not_pressed:
+
+		MOV #1, R0
+
+	_kbhit_end:
+
+		RTS R7
+
+_getchar:
+
+	_inicio_getchar:
+		MOV #65498,R0
+
+	_teste_getchar:
+		CLR (R0)
+		JSR R7,_kbhit
+
+	
+	CMP R0, #0
+	BNE _teste_getchar
+
+	MOV 65499, R0
+
+	RTS R7
+
+_putchar:
+	MOV R5,65500
+	RTS R7
