@@ -209,6 +209,10 @@ _setclock:
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 _setalarm:
+		mov r4,ahour
+		mov r3,amin
+		mov r2,asec
+		mov r5,addr
 		rts		r7
 
 
@@ -319,10 +323,13 @@ wait:
 ;VARIAVEIS DE TRATAMENTO DE INTERRUPÇÃO
 TICKCNT:	dw		0		; Variavel usada para contar o n?mero de interrup??es de temporiza??o
 TICK:		dw		0		; Flag que indica que passou 1 segundo, ap?s o ultimo TICK
-hour:		dw		1
-min:		dw		2
-sec:		dw		3
-
+hour:		dw		23
+min:		dw		58
+sec:		dw		0
+ahour:		dw		23
+amin:		dw		58
+asec:		dw		0
+addr:		dw		0
 
 ;variaveis do putchar
 _putchar_position:	dw	65500
@@ -352,11 +359,12 @@ org _APP
 
 
 ;versao que pega entrada do teclado
-;JSR R7,_getchar
-MOV sec, R5
+JSR R7,_getchar
+MOV R0, R5
 JSR R7,_putchar
 
-mov min,r2
+JSR R7,_getclock
+
 ;MOV TEC_BUFFER, R5
 ;JSR R7,_putchar
 
