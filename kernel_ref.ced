@@ -264,9 +264,19 @@ isr:
 		
 		_hour_limit_check:
 		cmp hour, #24
-		bne ISR2
-		mov	#0, hour	
+		bne _callback
+		mov	#0, hour
 
+		_callback:
+
+		cmp hour,ahour
+		bne ISR2
+		cmp min,amin
+		bne ISR2
+		cmp sec,asec
+		bne ISR2
+		
+		JSR r7,addr
 
 
 ISR2:
@@ -297,27 +307,24 @@ ISRtim_Fim:
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
 
-wait:
-		tst		TICK
-		beq		wait
-		clr		TICK
+random:
+		MOV 'z', R5
+		
+		JSR R7,_putchar
+JSR R7,_putchar
+JSR R7,_putchar
+JSR R7,_putchar
+JSR R7,_putchar
+JSR R7,_putchar
+JSR R7,_putchar
+JSR R7,_putchar
+JSR R7,_putchar
+JSR R7,_putchar
+JSR R7,_putchar
+JSR R7,_putchar
+JSR R7,_putchar
+JSR R7,_putchar
 		rts		r7
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ;VARIAVEIS DE TRATAMENTO DE INTERRUPÇÃO
@@ -327,9 +334,9 @@ hour:		dw		23
 min:		dw		58
 sec:		dw		0
 ahour:		dw		23
-amin:		dw		58
-asec:		dw		0
-addr:		dw		0
+amin:		dw		59
+asec:		dw		19
+addr:		dw		random
 
 ;variaveis do putchar
 _putchar_position:	dw	65500
@@ -355,20 +362,20 @@ _clear_display_loop:
 
 
 
-org _APP
+;org _APP
 
 
 ;versao que pega entrada do teclado
-JSR R7,_getchar
-MOV R0, R5
-JSR R7,_putchar
+;JSR R7,_getchar
+;MOV R0, R5
+;JSR R7,_putchar
 
-JSR R7,_getclock
+;JSR R7,_getclock
 
 ;MOV TEC_BUFFER, R5
 ;JSR R7,_putchar
 
 
-BR _APP
+;BR _APP
 
-HLT
+;HLT
