@@ -225,19 +225,55 @@ isr:
 		mov		r2,-(r6)
 		mov		r3,-(r6)
 		mov		r4,-(r6)
+		mov		r5,-(r6)
+
 
 		mov		INTS,r0		; Verifica se ? INT do TIMER
 		and		#1,r0
 		beq		ISR2
 		jsr		r7,ISRtim	; Tratamento da INT do TIMER
 		and		#hFFFE,INTS	; Desliga bit de INT TIMER
+		
+		tst	TICK
+		bne	ISR2
+		clr	TICK
+
+		mov	sec, r5
+		inc	r5
+		mov	r5, sec	
+		
+		_seconds_limit_check:
+		cmp	sec, #60
+		bne	_minutes_limit_check
+		mov	#0, sec
+		mov	min, r5
+		inc	r5
+		mov	r5,min
+		
+		_minutes_limit_check:
+		cmp	min,#60
+		bne	_hour_limit_check
+		mov	#0, min
+		mov	hour,r5
+		inc	r5
+		mov	r5,hour		
+		
+		_hour_limit_check:
+		cmp hour, #24
+		bne ISR2
+		mov	#0, hour	
+
+
+
 ISR2:
 
+		mov		(r6)+,r5
 		mov		(r6)+,r4	; Retorna os registradores da pilha
 		mov		(r6)+,r3
 		mov		(r6)+,r2
 		mov		(r6)+,r1
 		mov		(r6)+,r0
+		
 
 		rti					; Return From Interrupt
 	
@@ -256,6 +292,29 @@ ISRtim_Fim:
 
 ;------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------
+
+wait:
+		tst		TICK
+		beq		wait
+		clr		TICK
+		rts		r7
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ;VARIAVEIS DE TRATAMENTO DE INTERRUPÇÃO
 TICKCNT:	dw		0		; Variavel usada para contar o n?mero de interrup??es de temporiza??o
@@ -294,25 +353,14 @@ org _APP
 
 ;versao que pega entrada do teclado
 ;JSR R7,_getchar
-;MOV R0, R5
-;JSR R7,_putchar
+MOV sec, R5
+JSR R7,_putchar
 
-mov #7, r3
-mov #8, r4
-mov #9, r5
-
-jsr r7,_setclock
-
-clr r3
-clr r4
-clr r5
-
-jsr r7,_getclock
-
+mov min,r2
 ;MOV TEC_BUFFER, R5
 ;JSR R7,_putchar
 
 
-;BR _APP
+BR _APP
 
 HLT
